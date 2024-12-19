@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Extractor</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <h1>Enter Data</h1>
+    <div class="form-container">
+        <form action="/extract_urls" method="post">
+            <textarea name="urls" placeholder="Paste your content here"></textarea><br><br>
+            <button type="submit">Extract</button>
+        </form>
+    </div>
+
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if urls or emails or codes %}
+    <div class="output">
+        <div class="output-urls">
+            {% if urls %}
+            <h2>URLs:</h2>
+            <div class="output-btns">
+                <button id="openAllBtn">
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </button>
+    
+                <button id="closeAllBtn">
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </button>
+            </div>
+
+
+            
+            <ul id="urlList">
+                {% for url in urls %}
+                <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% if emails %}
+        <div class="output-ec">
+            
+            <h2>Emails:</h2>
+            <ul>
+                {% for email in emails %}
+                <li>{{ email }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            
+            {% if codes %}
+            <h2>Codes:</h2>
+            <ul>
+                {% for code in codes %}
+                <li>{{ code }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+                <script>
+                let openedTabs = [];
+            
+                // Function to open all URLs
+                document.getElementById('openAllBtn').addEventListener('click', function() {
+                    const links = document.querySelectorAll('#urlList a');
+                    links.forEach(link => {
+                        let newTab = window.open(link.href, '_blank');
+                        if (newTab) {
+                            openedTabs.push(newTab);
+                        }
+                    });
+                });
+            
+                // Function to close all opened tabs
+                document.getElementById('closeAllBtn').addEventListener('click', function() {
+                    openedTabs.forEach(tab => {
+                        tab.close();
+                    });
+                    openedTabs = []; // Clear the array after closing
+                });
+            </script>
+</body>
+</html>
